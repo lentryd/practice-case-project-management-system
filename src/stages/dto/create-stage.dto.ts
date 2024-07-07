@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 export default class CreateStageDto {
@@ -20,7 +21,7 @@ export default class CreateStageDto {
   @IsNotEmpty()
   endDate: Date;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   projectId: string;
 }

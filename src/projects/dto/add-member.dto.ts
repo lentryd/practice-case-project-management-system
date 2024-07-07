@@ -1,6 +1,7 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsUUID } from 'class-validator';
 
 export default class AddMemberDto {
-  @IsString()
+  @IsUUID()
+  @IsNotEmpty()
   id: string;
 }
