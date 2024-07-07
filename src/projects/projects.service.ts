@@ -1,9 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import CreateStageDto from '../stages/dto/create-stage.dto';
 import CreateProjectDto from './dto/create-project.dto';
 import UpdateProjectDto from './dto/update-project.dto';
-import UpdateStageDto from '../stages/dto/update-stage.dto';
 
 @Injectable()
 export class ProjectsService {

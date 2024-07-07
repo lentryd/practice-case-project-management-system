@@ -54,6 +54,8 @@ model Project {
 
   /// The stages that belong to the project
   stages Stage[] @relation("ProjectStages")
+  /// The tasks that belong to the project
+  tasks  Task[]  @relation("ProjectTasks")
 }
 
 model Stage {
@@ -74,7 +76,31 @@ model Stage {
   /// The date the stage was last updated
   updatedAt DateTime @updatedAt
 
+  /// The tasks that belong to the stage
+  tasks Task[] @relation("StageTasks")
+
   /// The project that the stage belongs to
   project   Project @relation("ProjectStages", fields: [projectId], references: [id])
+  projectId String
+}
+
+model Task {
+  /// The unique identifier of the task
+  id          String  @id @default(uuid())
+  /// The name of the task
+  name        String
+  /// The description of the task
+  description String?
+
+  /// The date the task was created
+  createdAt DateTime @default(now())
+  /// The date the task was last updated
+  updatedAt DateTime @updatedAt
+
+  /// The stage that the task belongs to
+  stage     Stage   @relation("StageTasks", fields: [stageId], references: [id])
+  stageId   String
+  /// The project that the task belongs to
+  project   Project @relation("ProjectTasks", fields: [projectId], references: [id])
   projectId String
 }

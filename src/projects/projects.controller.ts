@@ -9,18 +9,26 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { OmitType } from '@nestjs/mapped-types';
 import { AuthGuard } from '../auth/auth.guard';
+
 import { ProjectsService } from './projects.service';
-import { StagesService } from '../stages/stages.service';
 import AddMemberDto from './dto/add-member.dto';
-import CreateStageDto from '../stages/dto/create-stage.dto';
-import UpdateStageDto from '../stages/dto/update-stage.dto';
-import CreateProjectDto from './dto/create-project.dto';
 import UpdateProjectDto from './dto/update-project.dto';
+import CreateProjectDto from './dto/create-project.dto';
+
+import { StagesService } from '../stages/stages.service';
+import BaseStageDto, { UpdateStageDto } from '../stages/stage.dto';
+class CreateStageDto extends OmitType(BaseStageDto, ['projectId']) {}
+
+import { TasksService } from '../tasks/tasks.service';
+import BaseTaskDto, { UpdateTaskDto } from '../tasks/task.dto';
+class CreateTaskDto extends OmitType(BaseTaskDto, ['projectId']) {}
 
 @Controller('projects')
 export class ProjectsController {
   constructor(
+    private readonly tasksService: TasksService,
     private readonly stagesService: StagesService,
     private readonly projectsService: ProjectsService,
   ) {}
@@ -55,6 +63,33 @@ export class ProjectsController {
     return this.projectsService.delete(id, req.user.id);
   }
 
+  @Get(':id/tasks')
+  @UseGuards(AuthGuard)
+  async findTasks(@Param('id') id: string) {
+    return this.tasksService.findByProjectId(id);
+  }
+
+  @Post(':id/tasks')
+  @UseGuards(AuthGuard)
+  async createTask(@Param('id') id: string, @Body() data: CreateTaskDto) {
+    return this.tasksService.create({ ...data, projectId: id });
+  }
+
+  @Put(':id/tasks/:taskId')
+  @UseGuards(AuthGuard)
+  async updateTask(
+    @Param('taskId') taskId: string,
+    @Body() data: UpdateTaskDto,
+  ) {
+    return this.tasksService.update(taskId, data);
+  }
+
+  @Delete(':id/tasks/:taskId')
+  @UseGuards(AuthGuard)
+  async removeTask(@Param('taskId') taskId: string) {
+    return this.tasksService.delete(taskId);
+  }
+
   @Get(':id/stages')
   @UseGuards(AuthGuard)
   async findStages(@Param('id') id: string) {
@@ -63,10 +98,7 @@ export class ProjectsController {
 
   @Post(':id/stages')
   @UseGuards(AuthGuard)
-  async createStage(
-    @Param('id') id: string,
-    @Body() data: Omit<CreateStageDto, 'projectId'>,
-  ) {
+  async createStage(@Param('id') id: string, @Body() data: CreateStageDto) {
     return this.stagesService.create({ ...data, projectId: id });
   }
 
