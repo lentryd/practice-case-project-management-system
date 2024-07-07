@@ -5,6 +5,7 @@ on:
     branches:
       - backend
       - frontend
+  workflow_dispatch:
 
 jobs:
   build-backend:
@@ -87,17 +88,4 @@ jobs:
       - name: Download Frontend Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: frontend-artifacts
-          path: .
-
-      - name: Add changes
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .
-          git commit -m "Update dist and client"
-
-      - name: Push changes
-        run: git push origin test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: frontend-artifa
