@@ -9,12 +9,21 @@ type UserUpdateData = UserUpdateDto & { password?: string };
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Find all users
+   * @returns all users
+   */
   async findAll() {
     return (await this.prisma.user.findMany()).map(
       ({ password, ...user }) => user,
     );
   }
 
+  /**
+   * Find a user by id
+   * @param id id of the user
+   * @returns the user
+   */
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
@@ -25,9 +34,14 @@ export class UsersService {
     return safeUser;
   }
 
-  async update(id: string, updateDto: UserUpdateDto) {
-    const { current_password, new_password, ...data }: UserUpdateData =
-      updateDto;
+  /**
+   * Update a user
+   * @param id id of the user
+   * @param dto user data
+   * @returns the updated user
+   */
+  async update(id: string, dto: UserUpdateDto) {
+    const { current_password, new_password, ...data }: UserUpdateData = dto;
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new BadRequestException('User not found');
@@ -64,18 +78,28 @@ export class UsersService {
     }
 
     // Update the user
-    const updatedUser = await this.prisma.user.update({ where: { id }, data });
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data,
+    });
     const { password, ...safeUser } = updatedUser;
     return safeUser;
   }
 
+  /**
+   * Delete a user
+   * @param id id of the user
+   * @returns empty object
+   */
   async delete(id: string) {
+    // Check if user exists
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new BadRequestException('User not found');
     }
 
+    // Delete the user
     await this.prisma.user.delete({ where: { id } });
-    return { message: 'User deleted' };
+    return;
   }
 }
