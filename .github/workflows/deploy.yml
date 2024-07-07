@@ -1,0 +1,103 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - backend
+      - frontend
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Backend
+        uses: actions/checkout@v2
+        with:
+          ref: backend
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Backend
+        run: npm run build
+
+      - name: Save Backend Artifacts
+        run: |
+          mkdir -p backend_dist
+          cp -r dist backend_dist/
+          cp package.json backend_dist/
+        continue-on-error: true
+
+      - name: Upload Backend Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend-artifacts
+          path: backend_dist/
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: build-backend
+    steps:
+      - name: Checkout Frontend
+        uses: actions/checkout@v2
+        with:
+          ref: frontend
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Save Frontend Artifacts
+        run: mv dist client
+
+      - name: Upload Frontend Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend-artifacts
+          path: client/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    steps:
+      - name: Checkout Test Branch
+        uses: actions/checkout@v2
+        with:
+          ref: test
+          fetch-depth: 0
+
+      - name: Download Backend Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: backend-artifacts
+          path: .
+
+      - name: Download Frontend Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend-artifacts
+          path: .
+
+      - name: Add changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Update dist and client"
+
+      - name: Push changes
+        run: git push origin test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
