@@ -15,11 +15,66 @@ datasource db {
 
 model User {
   /// The unique identifier of the user
-  id       String  @id @default(uuid())
+  id       String    @id @default(uuid())
   /// The name of the user
   name     String?
   /// The email of the user
-  email    String  @unique
+  email    String    @unique
   /// The hashed password of the user
   password String
+  /// The projects that the user owns
+  projects Project[] @relation("ProjectOwner")
+  /// The projects that the user is a member of
+  memberOf Project[] @relation("ProjectMembers")
+}
+
+model Project {
+  /// The unique identifier of the project
+  id          String  @id @default(uuid())
+  /// The name of the project
+  name        String
+  /// The description of the project
+  description String?
+
+  /// The start date of the project
+  startDate DateTime
+  /// The end date of the project
+  endDate   DateTime
+
+  /// The date the project was created
+  createdAt DateTime @default(now())
+  /// The date the project was last updated
+  updatedAt DateTime @updatedAt
+
+  /// The user that created the project
+  owner   User   @relation("ProjectOwner", fields: [ownerId], references: [id])
+  ownerId String
+  /// The users that are members of the project
+  members User[] @relation("ProjectMembers")
+
+  /// The stages that belong to the project
+  stages Stage[] @relation("ProjectStages")
+}
+
+model Stage {
+  /// The unique identifier of the stage
+  id          String  @id @default(uuid())
+  /// The name of the stage
+  name        String
+  /// The description of the stage
+  description String?
+
+  /// The start date of the stage
+  startDate DateTime
+  /// The end date of the stage
+  endDate   DateTime
+
+  /// The date the stage was created
+  createdAt DateTime @default(now())
+  /// The date the stage was last updated
+  updatedAt DateTime @updatedAt
+
+  /// The project that the stage belongs to
+  project   Project @relation("ProjectStages", fields: [projectId], references: [id])
+  projectId String
 }
