@@ -61,7 +61,9 @@ jobs:
         run: npm run build
 
       - name: Save Frontend Artifacts
-        run: mv build client
+        run: |
+          mkdir -p client
+          cp -r build client/
 
       - name: Upload Frontend Artifacts
         uses: actions/upload-artifact@v2
@@ -89,12 +91,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: frontend-artifacts
-          path: .
-
-      - name: Organize Artifacts
-        run: |
-          mkdir -p client
-          mv frontend-artifacts/* client/
+          path: client/
 
       - name: Add changes
         run: |
