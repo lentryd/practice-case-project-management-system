@@ -5,8 +5,9 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 
-export default class CreateStageDto {
+export default class BaseStageDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -25,3 +26,8 @@ export default class CreateStageDto {
   @IsNotEmpty()
   projectId: string;
 }
+
+export class CreateStageDto extends BaseStageDto {}
+export class UpdateStageDto extends PartialType(
+  OmitType(BaseStageDto, ['projectId']),
+) {}
