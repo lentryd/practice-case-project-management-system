@@ -61,7 +61,7 @@ jobs:
         run: npm run build
 
       - name: Save Frontend Artifacts
-        run: mv dist client
+        run: mv build client
 
       - name: Upload Frontend Artifacts
         uses: actions/upload-artifact@v2
