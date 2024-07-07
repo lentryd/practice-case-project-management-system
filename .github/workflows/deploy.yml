@@ -63,7 +63,7 @@ jobs:
       - name: Save Frontend Artifacts
         run: |
           mkdir -p frontend_dist
-          mv dist/* frontend_dist/
+          mv build/* frontend_dist/
 
       - name: Upload Frontend Artifacts
         uses: actions/upload-artifact@v2
