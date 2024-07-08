@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import UserUpdateDto from './dto/user-update.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UpdateUserDto } from './users.dto';
 
-type UserUpdateData = UserUpdateDto & { password?: string };
+type UserUpdateData = UpdateUserDto & { password?: string };
 
 @Injectable()
 export class UsersService {
@@ -40,7 +40,7 @@ export class UsersService {
    * @param dto user data
    * @returns the updated user
    */
-  async update(id: string, dto: UserUpdateDto) {
+  async update(id: string, dto: UpdateUserDto) {
     const { current_password, new_password, ...data }: UserUpdateData = dto;
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {

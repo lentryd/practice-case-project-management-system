@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import LoginDto from './dto/login.dto';
-import RegisterDto from './dto/register.dto';
+import LoginDto from './auth.dto';
+import { CreateUserDto } from '../users/users.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class AuthService {
     return this.sighToken(user.id, user.email);
   }
 
-  async register(dto: RegisterDto) {
+  async register(dto: CreateUserDto) {
     const userExists = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
