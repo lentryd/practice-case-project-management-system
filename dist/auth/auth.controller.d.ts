@@ -1,5 +1,5 @@
-import LoginDto from './dto/login.dto';
-import RegisterDto from './dto/register.dto';
+import LoginDto from './auth.dto';
+import { CreateUserDto } from '../users/users.dto';
 import { AuthService } from './auth.service';
 export declare class AuthController {
     private readonly authService;
@@ -7,7 +7,7 @@ export declare class AuthController {
     login(dto: LoginDto): Promise<{
         access_token: string;
     }>;
-    register(dto: RegisterDto): Promise<{
+    register(dto: CreateUserDto): Promise<{
         access_token: string;
     }>;
 }

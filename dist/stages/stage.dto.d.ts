@@ -7,7 +7,7 @@ export default class BaseStageDto {
 }
 export declare class CreateStageDto extends BaseStageDto {
 }
-declare const UpdateStageDto_base: import("@nestjs/mapped-types").MappedType<Partial<Omit<BaseStageDto, "projectId">>>;
+declare const UpdateStageDto_base: import("@nestjs/common").Type<Partial<Omit<BaseStageDto, "projectId">>>;
 export declare class UpdateStageDto extends UpdateStageDto_base {
 }
 export {};

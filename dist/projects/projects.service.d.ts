@@ -1,6 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
-import CreateProjectDto from './dto/create-project.dto';
-import UpdateProjectDto from './dto/update-project.dto';
+import { CreateProjectDto, UpdateProjectDto } from './projects.dto';
 export declare class ProjectsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
@@ -16,9 +15,9 @@ export declare class ProjectsService {
     }[]>;
     findOne(id: string): Promise<{
         owner: {
-            email: string;
-            name: string;
             id: string;
+            name: string;
+            email: string;
         };
     } & {
         id: string;
@@ -63,9 +62,9 @@ export declare class ProjectsService {
         ownerId: string;
     }>;
     findMembers(id: string): Promise<{
-        email: string;
-        name: string;
         id: string;
+        name: string;
+        email: string;
     }[]>;
     addMember(projectId: string, memberId: string): Promise<{
         id: string;

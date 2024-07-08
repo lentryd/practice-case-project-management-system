@@ -1,7 +1,5 @@
 import { ProjectsService } from './projects.service';
-import AddMemberDto from './dto/add-member.dto';
-import UpdateProjectDto from './dto/update-project.dto';
-import CreateProjectDto from './dto/create-project.dto';
+import { CreateProjectDto, UpdateProjectDto, AddMemberDto } from './projects.dto';
 import { StagesService } from '../stages/stages.service';
 import BaseStageDto, { UpdateStageDto } from '../stages/stage.dto';
 declare const CreateStageDto_base: import("@nestjs/mapped-types").MappedType<Omit<BaseStageDto, "projectId">>;
@@ -29,9 +27,9 @@ export declare class ProjectsController {
     }[]>;
     findOne(id: string): Promise<{
         owner: {
-            email: string;
-            name: string;
             id: string;
+            name: string;
+            email: string;
         };
     } & {
         id: string;
@@ -133,9 +131,9 @@ export declare class ProjectsController {
     }>;
     removeStage(stageId: string): Promise<void>;
     findMembers(id: string): Promise<{
-        email: string;
-        name: string;
         id: string;
+        name: string;
+        email: string;
     }[]>;
     addMember(id: string, data: AddMemberDto): Promise<{
         id: string;

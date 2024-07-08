@@ -11,34 +11,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateTaskDto = exports.CreateTaskDto = void 0;
 const class_validator_1 = require("class-validator");
-const mapped_types_1 = require("@nestjs/mapped-types");
+const swagger_1 = require("@nestjs/swagger");
+const swagger_2 = require("@nestjs/swagger");
 class BaseTaskDto {
 }
 exports.default = BaseTaskDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The task name',
+        example: 'Task 1',
+    }),
     __metadata("design:type", String)
 ], BaseTaskDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The task description',
+        example: 'This is the first task',
+        required: false,
+    }),
     __metadata("design:type", String)
 ], BaseTaskDto.prototype, "description", void 0);
 __decorate([
     (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The stage identifier',
+        format: 'uuid',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+    }),
     __metadata("design:type", String)
 ], BaseTaskDto.prototype, "stageId", void 0);
 __decorate([
     (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The project identifier',
+        format: 'uuid',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+    }),
     __metadata("design:type", String)
 ], BaseTaskDto.prototype, "projectId", void 0);
 class CreateTaskDto extends BaseTaskDto {
 }
 exports.CreateTaskDto = CreateTaskDto;
-class UpdateTaskDto extends (0, mapped_types_1.PartialType)((0, mapped_types_1.OmitType)(BaseTaskDto, ['projectId'])) {
+class UpdateTaskDto extends (0, swagger_1.PartialType)((0, swagger_1.OmitType)(BaseTaskDto, ['projectId'])) {
 }
 exports.UpdateTaskDto = UpdateTaskDto;
 //# sourceMappingURL=task.dto.js.map

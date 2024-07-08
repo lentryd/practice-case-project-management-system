@@ -1,5 +1,5 @@
-import UserUpdateDto from './dto/user-update.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UpdateUserDto } from './users.dto';
 export declare class UsersService {
     private readonly prisma;
     constructor(prisma: PrismaService);
@@ -13,7 +13,7 @@ export declare class UsersService {
         name: string | null;
         email: string;
     }>;
-    update(id: string, dto: UserUpdateDto): Promise<{
+    update(id: string, dto: UpdateUserDto): Promise<{
         id: string;
         name: string | null;
         email: string;

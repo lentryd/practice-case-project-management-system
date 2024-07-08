@@ -16,6 +16,14 @@ const users_module_1 = require("./users/users.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const projects_module_1 = require("./projects/projects.module");
 const serve_static_1 = require("@nestjs/serve-static");
+const staticModule = process.env.CLIENT_DIR
+    ? [
+        serve_static_1.ServeStaticModule.forRoot({
+            rootPath: (0, path_1.join)(__dirname, '..', process.env.CLIENT_DIR),
+            exclude: ['/api/(.*)'],
+        }),
+    ]
+    : [];
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,10 +43,7 @@ exports.AppModule = AppModule = __decorate([
                 isGlobal: true,
                 envFilePath: '.env',
             }),
-            serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', 'client'),
-                exclude: ['/api/(.*)'],
-            }),
+            ...staticModule,
         ],
         providers: [],
         controllers: [],

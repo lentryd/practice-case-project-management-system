@@ -14,9 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const auth_guard_1 = require("../auth/auth.guard");
 const users_service_1 = require("./users.service");
-const user_update_dto_1 = require("./dto/user-update.dto");
+const users_dto_1 = require("./users.dto");
 let UsersController = class UsersController {
     constructor(users) {
         this.users = users;
@@ -51,6 +52,12 @@ exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all users' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The found records',
+        type: [users_dto_1.default],
+    }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -58,6 +65,12 @@ __decorate([
 __decorate([
     (0, common_1.Get)(':id'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiOperation)({ summary: 'Get a user by id' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The found record',
+        type: users_dto_1.default,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -67,16 +80,27 @@ __decorate([
 __decorate([
     (0, common_1.Put)(':id'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiOperation)({ summary: 'Update a user by id' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The updated record',
+        type: users_dto_1.default,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Request)()),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object, user_update_dto_1.default]),
+    __metadata("design:paramtypes", [String, Object, users_dto_1.UpdateUserDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete a user by id' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The deleted record',
+    }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -84,6 +108,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "delete", null);
 exports.UsersController = UsersController = __decorate([
+    (0, swagger_1.ApiTags)('users'),
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);

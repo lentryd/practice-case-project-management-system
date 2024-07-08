@@ -1,5 +1,5 @@
 import { UsersService } from './users.service';
-import UserUpdateDto from './dto/user-update.dto';
+import { UpdateUserDto } from './users.dto';
 export declare class UsersController {
     private readonly users;
     constructor(users: UsersService);
@@ -9,7 +9,7 @@ export declare class UsersController {
         email: string;
     }[]>;
     findOne(id: string, req: any): any;
-    update(id: string, req: any, updateDto: UserUpdateDto): Promise<{
+    update(id: string, req: any, updateDto: UpdateUserDto): Promise<{
         id: string;
         name: string | null;
         email: string;

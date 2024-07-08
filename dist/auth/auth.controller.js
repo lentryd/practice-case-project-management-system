@@ -14,9 +14,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const login_dto_1 = require("./dto/login.dto");
-const register_dto_1 = require("./dto/register.dto");
+const auth_dto_1 = require("./auth.dto");
+const users_dto_1 = require("../users/users.dto");
 const auth_service_1 = require("./auth.service");
+const swagger_1 = require("@nestjs/swagger");
+class LoginResponse {
+}
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The access token',
+        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+        type: 'string',
+    }),
+    __metadata("design:type", String)
+], LoginResponse.prototype, "access_token", void 0);
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -31,19 +42,32 @@ let AuthController = class AuthController {
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOperation)({ summary: 'Login' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The user has successfully logged in',
+        type: LoginResponse,
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.default]),
+    __metadata("design:paramtypes", [auth_dto_1.default]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)('register'),
+    (0, swagger_1.ApiOperation)({ summary: 'Register' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The user has successfully registered',
+        type: LoginResponse,
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.default]),
+    __metadata("design:paramtypes", [users_dto_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
