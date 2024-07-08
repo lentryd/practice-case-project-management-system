@@ -1,73 +1,63 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Project management system (backend)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Начало работы
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Следующие инструкции помогут вам запустить проект на вашем локальном компьютере для разработки и тестирования.
 
-## Description
+### Предварительные условия
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Для установки и использования этой библиотеки вам понадобятся:
 
-## Installation
+- NodeJS ≥ v18.20.3 ([установить](https://nodejs.org/ru/download/))
+
+### Подготовка
+
+1. Установите зависимости с помощью npm:
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Running the app
+2. Создайте файл `.env` в корне проекта и добавьте в него следующие переменные:
+
+```env
+PORT= # Порт, на котором будет работать сервер
+CLIENT_DIR= # Путь к папке с клиентской частью (опционально)
+DATABASE_URL= # Ссылка на базу данных
+JWT_SECRET= # Секретный ключ для JWT
+JWT_EXPIRES_IN= # Время жизни токена
+```
+
+> **Примечание**: Переменная `CLIENT_DIR` является опциональной. Если она не указана, сервер не будет отдавать статические файлы. Например:
+
+```env
+CLIENT_DIR=client/dist # Путь к скомпилированным файлам клиента (если есть)
+```
+
+3. Подготовьте базу данных:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npx prisma migrate deploy
 ```
 
-## Test
+4. Сгенерируйте Prisma Client:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma generate
 ```
 
-## Support
+5. Запустите сервер:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npm run start:dev
+```
 
-## Stay in touch
+## Дополнительная информация
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Во время разработки вы можете ознакомиться с документацией API по адресу `http://localhost:PORT/api/docs`.
 
-## License
+## Авторы
 
-Nest is [MIT licensed](LICENSE).
+- [lentryd](https://github.com/lentryd)
+
+Также посмотрите список участников, которые внесли свой вклад в проект.

@@ -8,6 +8,15 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
+const staticModule = process.env.CLIENT_DIR
+  ? [
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, '..', process.env.CLIENT_DIR),
+        exclude: ['/api/(.*)'],
+      }),
+    ]
+  : [];
+
 @Module({
   imports: [
     AuthModule,
@@ -23,10 +32,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
-      exclude: ['/api/(.*)'],
-    }),
+    ...staticModule,
   ],
   providers: [],
   controllers: [],
