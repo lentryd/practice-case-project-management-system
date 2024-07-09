@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StagesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const events_service_1 = require("../events/events.service");
 let StagesService = class StagesService {
-    constructor(prisma) {
+    constructor(prisma, eventsService) {
         this.prisma = prisma;
+        this.eventsService = eventsService;
     }
     async findAll() {
         return this.prisma.stage.findMany();
@@ -35,7 +37,15 @@ let StagesService = class StagesService {
         if (data.startDate >= data.endDate) {
             throw new common_1.BadRequestException('End date must be after start date');
         }
-        return this.prisma.stage.create({ data });
+        const project = await this.prisma.project.findUnique({
+            where: { id: data.projectId },
+        });
+        if (!project) {
+            throw new common_1.BadRequestException('Project not found');
+        }
+        const stage = await this.prisma.stage.create({ data });
+        this.eventsService.sendEvent(events_service_1.EventType.StageCreated, stage);
+        return stage;
     }
     async update(id, data) {
         const stage = await this.prisma.stage.findUnique({ where: { id } });
@@ -47,7 +57,12 @@ let StagesService = class StagesService {
         if (data.startDate >= data.endDate) {
             throw new common_1.BadRequestException('End date must be after start date');
         }
-        return this.prisma.stage.update({ where: { id }, data });
+        const updatedStage = await this.prisma.stage.update({
+            where: { id },
+            data,
+        });
+        this.eventsService.sendEvent(events_service_1.EventType.StageUpdated, updatedStage);
+        return updatedStage;
     }
     async delete(id) {
         const stage = await this.prisma.stage.findUnique({ where: { id } });
@@ -55,12 +70,14 @@ let StagesService = class StagesService {
             throw new common_1.BadRequestException('Stage not found');
         }
         await this.prisma.stage.delete({ where: { id } });
+        this.eventsService.sendEvent(events_service_1.EventType.StageDeleted, stage);
         return;
     }
 };
 exports.StagesService = StagesService;
 exports.StagesService = StagesService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        events_service_1.EventsService])
 ], StagesService);
 //# sourceMappingURL=stages.service.js.map

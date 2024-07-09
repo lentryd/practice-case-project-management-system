@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const events_service_1 = require("../events/events.service");
 let ProjectsService = class ProjectsService {
-    constructor(prisma) {
+    constructor(prisma, eventsService) {
         this.prisma = prisma;
+        this.eventsService = eventsService;
     }
     async findAll() {
         return this.prisma.project.findMany();
@@ -33,19 +35,23 @@ let ProjectsService = class ProjectsService {
         if (data.startDate >= data.endDate) {
             throw new common_1.BadRequestException('End date must be after start date');
         }
-        return this.prisma.project.create({
+        const project = this.prisma.project.create({
             data,
         });
+        this.eventsService.sendEvent(events_service_1.EventType.ProjectCreated, project);
+        return project;
     }
     async update(id, data) {
         const project = await this.prisma.project.findUnique({ where: { id } });
         if (!project) {
             throw new common_1.BadRequestException('Project not found');
         }
-        return this.prisma.project.update({
+        const updatedProject = await this.prisma.project.update({
             where: { id },
             data,
         });
+        this.eventsService.sendEvent(events_service_1.EventType.ProjectUpdated, updatedProject);
+        return updatedProject;
     }
     async delete(id, userId) {
         const project = await this.prisma.project.findUnique({ where: { id } });
@@ -55,9 +61,11 @@ let ProjectsService = class ProjectsService {
         if (project.ownerId !== userId) {
             throw new common_1.BadRequestException('You are not the owner of this project');
         }
-        return this.prisma.project.delete({
+        await this.prisma.project.delete({
             where: { id },
         });
+        this.eventsService.sendEvent(events_service_1.EventType.ProjectDeleted, project);
+        return;
     }
     async findMembers(id) {
         const project = await this.prisma.project.findUnique({
@@ -124,6 +132,7 @@ let ProjectsService = class ProjectsService {
 exports.ProjectsService = ProjectsService;
 exports.ProjectsService = ProjectsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        events_service_1.EventsService])
 ], ProjectsService);
 //# sourceMappingURL=projects.service.js.map

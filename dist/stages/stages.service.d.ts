@@ -1,8 +1,10 @@
 import { PrismaService } from '../prisma/prisma.service';
+import { EventsService } from '../events/events.service';
 import { CreateStageDto, UpdateStageDto } from './stage.dto';
 export declare class StagesService {
     private readonly prisma;
-    constructor(prisma: PrismaService);
+    private readonly eventsService;
+    constructor(prisma: PrismaService, eventsService: EventsService);
     findAll(): Promise<{
         id: string;
         name: string;

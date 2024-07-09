@@ -61,16 +61,7 @@ export declare class ProjectsController {
         updatedAt: Date;
         ownerId: string;
     }>;
-    delete(id: string, req: any): Promise<{
-        id: string;
-        name: string;
-        description: string | null;
-        startDate: Date;
-        endDate: Date;
-        createdAt: Date;
-        updatedAt: Date;
-        ownerId: string;
-    }>;
+    delete(id: string, req: any): Promise<void>;
     findTasks(id: string): Promise<{
         id: string;
         name: string;

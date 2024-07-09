@@ -13,6 +13,7 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
+const events_module_1 = require("./events/events.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const projects_module_1 = require("./projects/projects.module");
 const serve_static_1 = require("@nestjs/serve-static");
@@ -32,6 +33,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
+            events_module_1.EventsModule,
             prisma_module_1.PrismaModule,
             projects_module_1.ProjectsModule,
             jwt_1.JwtModule.register({

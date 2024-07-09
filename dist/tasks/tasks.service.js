@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TasksService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const events_service_1 = require("../events/events.service");
 let TasksService = class TasksService {
-    constructor(prisma) {
+    constructor(prisma, eventsService) {
         this.prisma = prisma;
+        this.eventsService = eventsService;
     }
     async findAll() {
         return this.prisma.task.findMany();
@@ -47,7 +49,9 @@ let TasksService = class TasksService {
         if (!project) {
             throw new common_1.BadRequestException('Project not found');
         }
-        return this.prisma.task.create({ data });
+        const task = await this.prisma.task.create({ data });
+        this.eventsService.sendEvent(events_service_1.EventType.TaskCreated, task);
+        return task;
     }
     async update(id, data) {
         const task = await this.findOne(id);
@@ -62,7 +66,9 @@ let TasksService = class TasksService {
                 throw new common_1.BadRequestException('Stage not found');
             }
         }
-        return this.prisma.task.update({ where: { id }, data });
+        const updatedTask = await this.prisma.task.update({ where: { id }, data });
+        this.eventsService.sendEvent(events_service_1.EventType.TaskUpdated, updatedTask);
+        return updatedTask;
     }
     async delete(id) {
         const task = await this.findOne(id);
@@ -70,12 +76,14 @@ let TasksService = class TasksService {
             throw new common_1.BadRequestException('Task not found');
         }
         await this.prisma.task.delete({ where: { id } });
+        this.eventsService.sendEvent(events_service_1.EventType.TaskDeleted, task);
         return;
     }
 };
 exports.TasksService = TasksService;
 exports.TasksService = TasksService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        events_service_1.EventsService])
 ], TasksService);
 //# sourceMappingURL=tasks.service.js.map
