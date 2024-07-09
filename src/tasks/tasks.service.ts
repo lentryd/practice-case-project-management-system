@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto, UpdateTaskDto } from './task.dto';
+import { EventsService, EventType } from 'src/events/events.service';
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventsService: EventsService,
+  ) {}
 
   /**
    * Find all tasks
@@ -68,7 +72,11 @@ export class TasksService {
       throw new BadRequestException('Project not found');
     }
 
-    return this.prisma.task.create({ data });
+    // Create task and send event
+    const task = await this.prisma.task.create({ data });
+    this.eventsService.sendEvent(EventType.TaskCreated, task);
+
+    return task;
   }
 
   /**
@@ -94,7 +102,11 @@ export class TasksService {
       }
     }
 
-    return this.prisma.task.update({ where: { id }, data });
+    // Update task and send event
+    const updatedTask = await this.prisma.task.update({ where: { id }, data });
+    this.eventsService.sendEvent(EventType.TaskUpdated, updatedTask);
+
+    return updatedTask;
   }
 
   /**
@@ -109,7 +121,10 @@ export class TasksService {
       throw new BadRequestException('Task not found');
     }
 
+    // Delete task and send event
     await this.prisma.task.delete({ where: { id } });
+    this.eventsService.sendEvent(EventType.TaskDeleted, task);
+
     return;
   }
 }

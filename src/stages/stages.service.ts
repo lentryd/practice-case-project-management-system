@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EventsService, EventType } from '../events/events.service';
 import { CreateStageDto, UpdateStageDto } from './stage.dto';
 
 @Injectable()
 export class StagesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventsService: EventsService,
+  ) {}
 
   /**
    * Find all stages
@@ -49,7 +53,19 @@ export class StagesService {
       throw new BadRequestException('End date must be after start date');
     }
 
-    return this.prisma.stage.create({ data });
+    // Check if project exists
+    const project = await this.prisma.project.findUnique({
+      where: { id: data.projectId },
+    });
+    if (!project) {
+      throw new BadRequestException('Project not found');
+    }
+
+    // Create stage and send event
+    const stage = await this.prisma.stage.create({ data });
+    this.eventsService.sendEvent(EventType.StageCreated, stage);
+
+    return stage;
   }
 
   /**
@@ -72,7 +88,14 @@ export class StagesService {
       throw new BadRequestException('End date must be after start date');
     }
 
-    return this.prisma.stage.update({ where: { id }, data });
+    // Update stage and send event
+    const updatedStage = await this.prisma.stage.update({
+      where: { id },
+      data,
+    });
+    this.eventsService.sendEvent(EventType.StageUpdated, updatedStage);
+
+    return updatedStage;
   }
 
   /**
@@ -87,7 +110,10 @@ export class StagesService {
       throw new BadRequestException('Stage not found');
     }
 
+    // Delete stage and send event
     await this.prisma.stage.delete({ where: { id } });
+    this.eventsService.sendEvent(EventType.StageDeleted, stage);
+
     return;
   }
 }

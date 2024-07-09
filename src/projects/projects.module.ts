@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ProjectsController } from './projects.controller';
 import { ProjectsService } from './projects.service';
 import { StagesService } from '../stages/stages.service';
-import { TasksService } from 'src/tasks/tasks.service';
+import { TasksService } from '../tasks/tasks.service';
 
 @Module({
   controllers: [ProjectsController],

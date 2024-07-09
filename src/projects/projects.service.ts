@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto, UpdateProjectDto } from './projects.dto';
+import { EventsService, EventType } from 'src/events/events.service';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventsService: EventsService,
+  ) {}
 
   /**
    * Find all projects
@@ -42,9 +46,13 @@ export class ProjectsService {
       throw new BadRequestException('End date must be after start date');
     }
 
-    return this.prisma.project.create({
+    // Create project and send event
+    const project = this.prisma.project.create({
       data,
     });
+    this.eventsService.sendEvent(EventType.ProjectCreated, project);
+
+    return project;
   }
 
   /**
@@ -60,10 +68,14 @@ export class ProjectsService {
       throw new BadRequestException('Project not found');
     }
 
-    return this.prisma.project.update({
+    // Update project and send event
+    const updatedProject = await this.prisma.project.update({
       where: { id },
       data,
     });
+    this.eventsService.sendEvent(EventType.ProjectUpdated, updatedProject);
+
+    return updatedProject;
   }
 
   /**
@@ -83,9 +95,13 @@ export class ProjectsService {
       throw new BadRequestException('You are not the owner of this project');
     }
 
-    return this.prisma.project.delete({
+    // Delete project and send event
+    await this.prisma.project.delete({
       where: { id },
     });
+    this.eventsService.sendEvent(EventType.ProjectDeleted, project);
+
+    return;
   }
 
   /**
