@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 
 const baseUrl =
-  process.env.NODE_ENV == "production"
+  process.env.NODE_ENV === "production"
     ? "https://pms.lentryd.su"
     : "http://localhost:5000";
 
