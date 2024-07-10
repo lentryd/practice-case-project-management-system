@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button/Button";
 import TextField from "../../components/TextField/TextField";
+import validEmail from "../../utils/validEmail";
 import { useLazyMeQuery, useRegisterMutation } from "../../services/user.api";
 
 export default function Register() {
@@ -11,8 +12,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMsg, setEmailErrorMsg] = useState("");
-  const emailValid = () =>
-    email.length > 0 && /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+  const emailValid = () => email.length > 0 && validEmail(email);
 
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
