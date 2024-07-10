@@ -52,9 +52,10 @@ export default function Login() {
           error={emailError}
           errorMsg="Проверьте правильность введенного email"
           modelValue={email}
-          onUpdateModelValue={(value) => (
-            setEmail(value), setEmailError(false)
-          )}
+          onUpdateModelValue={(value) => {
+            setEmail(value);
+            setEmailError(false);
+          }}
         />
         <TextField
           label="Пароль"
@@ -63,9 +64,10 @@ export default function Login() {
           error={passwordError}
           errorMsg="Проверьте правильность введенного пароля"
           modelValue={password}
-          onUpdateModelValue={(value) => (
-            setPassword(value), setPasswordError(false)
-          )}
+          onUpdateModelValue={(value) => {
+            setPassword(value);
+            setPasswordError(false);
+          }}
         />
       </form>
 

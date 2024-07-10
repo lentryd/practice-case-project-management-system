@@ -65,7 +65,10 @@ export default function Register() {
           error={nameError}
           errorMsg="Введите имя"
           modelValue={name}
-          onUpdateModelValue={(value) => (setName(value), setNameError(false))}
+          onUpdateModelValue={(value) => {
+            setName(value);
+            setNameError(false);
+          }}
         />
         <TextField
           label="Email"
@@ -74,9 +77,10 @@ export default function Register() {
           error={emailError}
           errorMsg={emailErrorMsg}
           modelValue={email}
-          onUpdateModelValue={(value) => (
-            setEmail(value), setEmailError(false)
-          )}
+          onUpdateModelValue={(value) => {
+            setEmail(value);
+            setEmailError(false);
+          }}
         />
         <TextField
           label="Пароль"
@@ -85,9 +89,10 @@ export default function Register() {
           errorMsg="Пароль должен содержать не менее 8 символов"
           modelValue={password}
           autocomplete="new-password"
-          onUpdateModelValue={(value) => (
-            setPassword(value), setPasswordError(false)
-          )}
+          onUpdateModelValue={(value) => {
+            setPassword(value);
+            setPasswordError(false);
+          }}
         />
       </form>
 
