@@ -11,7 +11,7 @@ export default function Root() {
     if (!isAuthenticated) {
       navigate("/login", { replace: true });
     }
-  }, [isAuthenticated]);
+  }, [navigate, isAuthenticated]);
 
   return (
     <>

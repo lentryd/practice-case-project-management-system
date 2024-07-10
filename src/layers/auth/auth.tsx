@@ -12,7 +12,7 @@ export default function Root() {
     if (isAuthenticated) {
       navigate("/", { replace: true });
     }
-  });
+  }, [navigate, isAuthenticated]);
 
   return (
     <>
