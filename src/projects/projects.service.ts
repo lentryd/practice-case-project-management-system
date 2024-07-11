@@ -15,7 +15,13 @@ export class ProjectsService {
    * @returns all projects
    */
   async findAll() {
-    return this.prisma.project.findMany();
+    return this.prisma.project.findMany({
+      include: {
+        owner: {
+          select: { id: true, name: true, email: true },
+        },
+      },
+    });
   }
 
   /**
