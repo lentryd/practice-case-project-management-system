@@ -15,7 +15,13 @@ export declare class ProjectsController {
     private readonly stagesService;
     private readonly projectsService;
     constructor(tasksService: TasksService, stagesService: StagesService, projectsService: ProjectsService);
-    findAll(): Promise<{
+    findAll(): Promise<({
+        owner: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         id: string;
         name: string;
         description: string | null;
@@ -24,7 +30,7 @@ export declare class ProjectsController {
         createdAt: Date;
         updatedAt: Date;
         ownerId: string;
-    }[]>;
+    })[]>;
     findOne(id: string): Promise<{
         owner: {
             id: string;

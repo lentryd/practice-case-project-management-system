@@ -5,7 +5,13 @@ export declare class ProjectsService {
     private readonly prisma;
     private readonly eventsService;
     constructor(prisma: PrismaService, eventsService: EventsService);
-    findAll(): Promise<{
+    findAll(): Promise<({
+        owner: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         id: string;
         name: string;
         description: string | null;
@@ -14,7 +20,7 @@ export declare class ProjectsService {
         createdAt: Date;
         updatedAt: Date;
         ownerId: string;
-    }[]>;
+    })[]>;
     findOne(id: string): Promise<{
         owner: {
             id: string;

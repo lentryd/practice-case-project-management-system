@@ -19,7 +19,13 @@ let ProjectsService = class ProjectsService {
         this.eventsService = eventsService;
     }
     async findAll() {
-        return this.prisma.project.findMany();
+        return this.prisma.project.findMany({
+            include: {
+                owner: {
+                    select: { id: true, name: true, email: true },
+                },
+            },
+        });
     }
     async findOne(id) {
         return this.prisma.project.findUnique({
