@@ -1,0 +1,17 @@
+@import "../../styles/variables.scss";
+
+.top-app-bar-item {
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (prefers-color-scheme: light) {
+    color: $md-sys-color-on-surface-variant-light;
+  }
+  @media (prefers-color-scheme: dark) {
+    color: $md-sys-color-on-surface-variant-dark;
+  }
+}

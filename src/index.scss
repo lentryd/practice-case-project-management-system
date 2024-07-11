@@ -11,11 +11,11 @@
   border-radius: 0.2rem;
 
   @media (prefers-color-scheme: light) {
-    background-color: rgba($md-sys-color-on-surface-light, 8%);
+    background-color: rgba($md-sys-color-on-surface-light, 0.08);
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba($md-sys-color-on-surface-dark, 8%);
+    background-color: rgba($md-sys-color-on-surface-dark, 0.08);
   }
 }
 
@@ -23,19 +23,24 @@
   border-radius: 0.2rem;
 
   @media (prefers-color-scheme: light) {
-    background-color: rgba($md-sys-color-on-surface-light, 12%);
+    background-color: rgba($md-sys-color-on-surface-light, 0.12);
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba($md-sys-color-on-surface-dark, 12%);
+    background-color: rgba($md-sys-color-on-surface-dark, 0.12);
   }
 }
 
 // Основные стили
+html {
+  height: 100vh;
+  overflow: hidden;
+}
+
 html,
 body {
   margin: 0;
-  min-height: 100vh;
+  width: 100vw;
   overflow-x: hidden;
   text-size-adjust: 100%;
 
@@ -73,6 +78,7 @@ a {
 #root {
   display: flex;
   min-height: 100vh;
+  max-height: 100vh;
   overflow-x: hidden;
   flex-direction: column;
 

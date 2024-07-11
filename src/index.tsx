@@ -10,12 +10,14 @@ import "./styles/theme.scss";
 import AuthGuard from "./features/authGuard";
 
 // Auth pages
-import Auth from "./layers/auth/auth";
+import Auth from "./layers/auth";
 import Login from "./pages/login";
 import Register from "./pages/register";
 
 // App pages
-import App from "./layers/root/app";
+import Root from "./layers/root";
+import Main from "./pages/main";
+import Project from "./pages/project";
 
 const router = createBrowserRouter([
   // Auth routes
@@ -43,11 +45,15 @@ const router = createBrowserRouter([
   // App routes
   {
     path: "/",
-    element: <App />,
+    element: <Root />,
     children: [
       {
         index: true,
-        element: <h1>Home page</h1>,
+        element: <Main />,
+      },
+      {
+        path: "projects/:id",
+        element: <Project />,
       },
       {
         path: "about",

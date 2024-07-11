@@ -50,7 +50,7 @@ export default function Login() {
           type="email"
           autocomplete="email"
           error={emailError}
-          errorMsg="Проверьте правильность введенного email"
+          errorMsg="Проверьте правильность email"
           modelValue={email}
           onUpdateModelValue={(value) => {
             setEmail(value);
@@ -62,7 +62,7 @@ export default function Login() {
           type="password"
           autocomplete="current-password"
           error={passwordError}
-          errorMsg="Проверьте правильность введенного пароля"
+          errorMsg="Проверьте правильность пароля"
           modelValue={password}
           onUpdateModelValue={(value) => {
             setPassword(value);

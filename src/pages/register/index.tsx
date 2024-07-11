@@ -40,7 +40,7 @@ export default function Register() {
       .catch((e) => {
         if (e.data?.message.includes("email already exists")) {
           setEmailError(true);
-          setEmailErrorMsg("Пользователь с таким email уже существует");
+          setEmailErrorMsg("Этот email уже зарегистрирован");
           return;
         }
 

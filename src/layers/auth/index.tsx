@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { selectIsAuthenticated } from "../../features/userSlice";
-import "./auth.scss";
+import "./index.scss";
 import { useEffect } from "react";
 
 export default function Root() {

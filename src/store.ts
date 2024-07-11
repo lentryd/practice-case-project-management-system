@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import listenerMiddleware from "./middleware/auth";
 import { api } from "./services/api";
 import user from "./features/userSlice";
+import project from "./features/projectSlice";
 
 const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     user,
+    project,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
