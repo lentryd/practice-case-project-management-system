@@ -57,6 +57,10 @@ export class TasksService {
    * @returns the created task
    */
   async create(data: CreateTaskDto) {
+    // Check if start date is before end date
+    if (data.startDate >= data.endDate) {
+      throw new BadRequestException('End date must be after start date');
+    }
     // Check if stage exists
     const stage = await this.prisma.stage.findUnique({
       where: { id: data.stageId },
@@ -71,6 +75,22 @@ export class TasksService {
     if (!project) {
       throw new BadRequestException('Project not found');
     }
+
+    // Check if task index is valid
+    const taskIndex = await this.prisma.task.count({
+      where: { stageId: data.stageId },
+    });
+    if (data.indexAtStage > taskIndex + 1) {
+      throw new BadRequestException('Invalid task index at stage');
+    }
+    // Update task indexes
+    await this.prisma.task.updateMany({
+      where: {
+        stageId: data.stageId,
+        indexAtStage: { gte: data.indexAtStage },
+      },
+      data: { indexAtStage: { increment: 1 } },
+    });
 
     // Create task and send event
     const task = await this.prisma.task.create({ data });
@@ -92,6 +112,13 @@ export class TasksService {
       throw new BadRequestException('Task not found');
     }
 
+    // Check if start date is before end date
+    data.startDate ??= task.startDate;
+    data.endDate ??= task.endDate;
+    if (data.startDate >= data.endDate) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
     // Check if stage exists
     if (data.stageId) {
       const stage = await this.prisma.stage.findUnique({
@@ -100,6 +127,25 @@ export class TasksService {
       if (!stage) {
         throw new BadRequestException('Stage not found');
       }
+    }
+
+    // Check if task index is valid
+    if (data.indexAtStage) {
+      const taskIndex = await this.prisma.task.count({
+        where: { stageId: data.stageId },
+      });
+      if (data.indexAtStage > taskIndex + 1) {
+        throw new BadRequestException('Invalid task index at stage');
+      }
+
+      // Update task indexes
+      await this.prisma.task.updateMany({
+        where: {
+          stageId: data.stageId,
+          indexAtStage: { gte: data.indexAtStage },
+        },
+        data: { indexAtStage: { increment: 1 } },
+      });
     }
 
     // Update task and send event

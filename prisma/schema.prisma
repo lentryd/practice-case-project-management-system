@@ -92,15 +92,22 @@ model Task {
   /// The description of the task
   description String?
 
+  /// The start date of the task
+  startDate DateTime
+  /// The end date of the task
+  endDate   DateTime
+
   /// The date the task was created
   createdAt DateTime @default(now())
   /// The date the task was last updated
   updatedAt DateTime @updatedAt
 
+  /// The index of the task in the stage
+  indexAtStage Int
   /// The stage that the task belongs to
-  stage     Stage   @relation("StageTasks", fields: [stageId], references: [id])
-  stageId   String
+  stage        Stage   @relation("StageTasks", fields: [stageId], references: [id])
+  stageId      String
   /// The project that the task belongs to
-  project   Project @relation("ProjectTasks", fields: [projectId], references: [id])
-  projectId String
+  project      Project @relation("ProjectTasks", fields: [projectId], references: [id])
+  projectId    String
 }
