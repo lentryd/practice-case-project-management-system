@@ -91,6 +91,13 @@ export class TasksService {
       },
       data: { indexAtStage: { increment: 1 } },
     });
+    const updatedTasks = await this.prisma.task.findMany({
+      where: {
+        stageId: data.stageId,
+        indexAtStage: { gte: data.indexAtStage },
+      },
+    });
+    this.eventsService.sendEventMany(EventType.TaskUpdated, updatedTasks);
 
     // Create task and send event
     const task = await this.prisma.task.create({ data });
@@ -129,28 +136,87 @@ export class TasksService {
       }
     }
 
-    // Check if task index is valid
-    if (data.indexAtStage) {
+    // Update task indexes if stage or index changes
+    if (data.stageId || data.indexAtStage) {
+      const oldStageId = task.stageId;
+      const oldIndexAtStage = task.indexAtStage;
+      const newStageId = data.stageId ?? oldStageId;
+      const newIndexAtStage = data.indexAtStage ?? oldIndexAtStage;
+
+      // Check if task index is valid
       const taskIndex = await this.prisma.task.count({
-        where: { stageId: data.stageId },
+        where: { stageId: newStageId },
       });
-      if (data.indexAtStage > taskIndex + 1) {
+      if (newIndexAtStage > taskIndex) {
         throw new BadRequestException('Invalid task index at stage');
       }
 
-      // Update task indexes
-      await this.prisma.task.updateMany({
-        where: {
-          stageId: data.stageId,
-          indexAtStage: { gte: data.indexAtStage },
-        },
-        data: { indexAtStage: { increment: 1 } },
-      });
+      if (oldStageId !== newStageId) {
+        // If task is moved to a different stage
+        // Decrement indices of tasks in old stage
+        await this.prisma.task.updateMany({
+          where: {
+            stageId: oldStageId,
+            indexAtStage: { gt: oldIndexAtStage },
+          },
+          data: { indexAtStage: { decrement: 1 } },
+        });
+
+        // Increment indices of tasks in new stage
+        await this.prisma.task.updateMany({
+          where: {
+            stageId: newStageId,
+            indexAtStage: { gte: newIndexAtStage },
+          },
+          data: { indexAtStage: { increment: 1 } },
+        });
+      } else {
+        // If task is moved within the same stage
+        if (newIndexAtStage < oldIndexAtStage) {
+          // Increment indices of tasks between newIndexAtStage and oldIndexAtStage
+          await this.prisma.task.updateMany({
+            where: {
+              stageId: oldStageId,
+              indexAtStage: {
+                gte: newIndexAtStage,
+                lt: oldIndexAtStage,
+              },
+            },
+            data: { indexAtStage: { increment: 1 } },
+          });
+        } else if (newIndexAtStage > oldIndexAtStage) {
+          // Decrement indices of tasks between oldIndexAtStage and newIndexAtStage
+          await this.prisma.task.updateMany({
+            where: {
+              stageId: oldStageId,
+              indexAtStage: {
+                gt: oldIndexAtStage,
+                lte: newIndexAtStage,
+              },
+            },
+            data: { indexAtStage: { decrement: 1 } },
+          });
+        }
+      }
     }
 
     // Update task and send event
     const updatedTask = await this.prisma.task.update({ where: { id }, data });
-    this.eventsService.sendEvent(EventType.TaskUpdated, updatedTask);
+
+    if (task.stageId === updatedTask.stageId) {
+      this.eventsService.sendEvent(EventType.TaskUpdated, updatedTask);
+    } else {
+      // Update tasks and send events
+      await this.prisma.task
+        .findMany({
+          where: {
+            OR: [{ stageId: task.stageId }, { stageId: updatedTask.stageId }],
+          },
+        })
+        .then((tasks) =>
+          this.eventsService.sendEventMany(EventType.TaskUpdated, tasks),
+        );
+    }
 
     return updatedTask;
   }

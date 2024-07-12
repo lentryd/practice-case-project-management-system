@@ -29,6 +29,16 @@ export class EventsService {
     }
   }
 
+  sendEventMany(event: EventType, data: any[]) {
+    if (event.startsWith('task')) {
+      this.tasksMessageEvent.next({ data: { event, data } });
+    } else if (event.startsWith('stage')) {
+      this.stagesMessageEvent.next({ data: { event, data } });
+    } else if (event.startsWith('project')) {
+      this.projectsMessageEvent.next({ data: { event, data } });
+    }
+  }
+
   getTaskObservable() {
     return this.tasksMessageEvent.asObservable();
   }
