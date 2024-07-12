@@ -147,7 +147,7 @@ export class TasksService {
       const taskIndex = await this.prisma.task.count({
         where: { stageId: newStageId },
       });
-      if (newIndexAtStage > taskIndex) {
+      if (newIndexAtStage > taskIndex + 1) {
         throw new BadRequestException('Invalid task index at stage');
       }
 
