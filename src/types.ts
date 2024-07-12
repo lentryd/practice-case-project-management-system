@@ -91,6 +91,6 @@ export interface Task {
   created_at: string;
   updated_at: string;
 
-  stage_id: string;
-  project_id: string;
+  stageId: string;
+  projectId: string;
 }

@@ -1,0 +1,228 @@
+@import '../../styles/variables.scss';
+
+.gantt-chart {
+  padding: 0 16px;
+
+  .calendar {
+    rect {
+
+      @media (prefers-color-scheme: dark) {
+        fill: rgba($md-sys-color-surface-variant-dark, .36) !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: rgba($md-sys-color-surface-variant-light, .36) !important;
+      }
+    }
+
+    text {
+      @media (prefers-color-scheme: dark) {
+        fill: $md-sys-color-on-surface-variant-dark !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: $md-sys-color-on-surface-variant-light !important;
+      }
+    }
+
+  }
+
+  // Color horizontal lines and vertical lines
+  .ticks>line,
+  .rowLines>line,
+  .calendar line,
+  .calendar rect {
+    @media (prefers-color-scheme: dark) {
+      stroke: rgba($md-sys-color-outline-dark, .24) !important;
+    }
+
+    @media (prefers-color-scheme: light) {
+      stroke: rgba($md-sys-color-outline-light, .12) !important;
+    }
+  }
+
+  // Color rows 
+  .rows>rect {
+    @media (prefers-color-scheme: dark) {
+      fill: $md-sys-color-surface-dark !important;
+    }
+
+    @media (prefers-color-scheme: light) {
+      fill: $md-sys-color-surface-light !important;
+    }
+
+    &:nth-child(even) {
+      @media (prefers-color-scheme: dark) {
+        fill: rgba($md-sys-color-surface-variant-dark, .24) !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: rgba($md-sys-color-surface-variant-light, .46) !important;
+      }
+    }
+  }
+
+  // Color today column
+  .today>rect {
+    @media (prefers-color-scheme: dark) {
+      fill: rgba($md-sys-color-primary-dark, .24) !important;
+    }
+
+    @media (prefers-color-scheme: light) {
+      fill: rgba($md-sys-color-primary-light, .24) !important;
+    }
+  }
+
+  // Color dependencies
+  .arrows>.arrow {
+    @media (prefers-color-scheme: dark) {
+      fill: $md-sys-color-on-background-dark;
+      stroke: $md-sys-color-on-background-dark;
+    }
+
+    @media (prefers-color-scheme: light) {
+      fill: $md-sys-color-on-background-light;
+      stroke: $md-sys-color-on-background-light;
+    }
+  }
+
+  .bar {
+
+    // Color project name
+    >g:first-child>._1KJ6x {
+      @media (prefers-color-scheme: dark) {
+        fill: $md-sys-color-error-dark !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: $md-sys-color-error-light !important;
+      }
+    }
+
+    >g:first-child>._1KJ6x+text {
+      @media (prefers-color-scheme: dark) {
+        fill: $md-sys-color-on-error-dark !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: $md-sys-color-on-error-light !important;
+      }
+    }
+
+
+    // Color project stages
+    ._1KJ6x {
+      @media (prefers-color-scheme: dark) {
+        fill: $md-sys-color-inverse-surface-dark !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: $md-sys-color-inverse-surface-light !important;
+      }
+    }
+
+    ._1KJ6x+text {
+      @media (prefers-color-scheme: dark) {
+        fill: $md-sys-color-inverse-on-surface-dark !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: $md-sys-color-inverse-on-surface-light !important;
+      }
+    }
+
+    // Color project tasks
+    @media (prefers-color-scheme: dark) {
+      fill: $md-sys-color-secondary-dark !important;
+    }
+
+    @media (prefers-color-scheme: light) {
+      fill: $md-sys-color-secondary-light !important;
+    }
+
+    rect {
+      opacity: 1;
+    }
+
+    text {
+      @media (prefers-color-scheme: dark) {
+        fill: $md-sys-color-on-secondary-dark !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: $md-sys-color-on-secondary-light !important;
+      }
+    }
+
+    .handleGroup rect {
+      @media (prefers-color-scheme: dark) {
+        fill: rgba($md-sys-color-on-secondary-dark, .36) !important;
+      }
+
+      @media (prefers-color-scheme: light) {
+        fill: rgba($md-sys-color-on-secondary-light, .36) !important;
+      }
+    }
+  }
+
+  // Color scrollbar
+  ._2k9Ys,
+  ._1eT-t {
+    scrollbar-width: auto !important;
+
+    &::-webkit-scrollbar {
+      width: 8px !important;
+      height: 8px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+      margin: 0.25rem !important;
+      border-radius: 0.2rem !important;
+
+      @media (prefers-color-scheme: light) {
+        background-color: rgba($md-sys-color-on-surface-light, 0.08) !important;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        background-color: rgba($md-sys-color-on-surface-dark, 0.08) !important;
+      }
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: none !important;
+      border-radius: 0.2rem !important;
+
+      @media (prefers-color-scheme: light) {
+        background-color: rgba($md-sys-color-on-surface-light, 0.12) !important;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        background-color: rgba($md-sys-color-on-surface-dark, 0.12) !important;
+      }
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      @media (prefers-color-scheme: light) {
+        background-color: rgba($md-sys-color-on-surface-light, 0.24) !important;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        background-color: rgba($md-sys-color-on-surface-dark, 0.24) !important;
+      }
+    }
+  }
+
+  ._3T42e {
+    border-radius: 8px;
+
+    @media (prefers-color-scheme: light) {
+      color: $md-sys-color-on-surface-light !important;
+      background-color: rgba($md-sys-color-surface-light, 1) !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      color: $md-sys-color-on-surface-dark !important;
+      background-color: rgba($md-sys-color-surface-dark, 1) !important;
+    }
+  }
+}

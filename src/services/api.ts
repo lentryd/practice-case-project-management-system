@@ -21,5 +21,6 @@ const baseQuery = fetchBaseQuery({
 export const api = createApi({
   reducerPath: "splitApi",
   baseQuery,
+  refetchOnFocus: true,
   endpoints: () => ({}),
 });

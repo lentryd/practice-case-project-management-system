@@ -42,3 +42,5 @@ export const {
 export const {
   endpoints: { getTasks, createTask, updateTask, deleteTask },
 } = tasksApi;
+
+export default tasksApi;

@@ -31,6 +31,16 @@
   }
 }
 
+::-webkit-scrollbar-thumb:hover {
+  @media (prefers-color-scheme: light) {
+    background-color: rgba($md-sys-color-on-surface-light, 0.24);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba($md-sys-color-on-surface-dark, 0.24);
+  }
+}
+
 // Основные стили
 html {
   height: 100vh;
