@@ -69,7 +69,7 @@ export default function Root() {
     const startDate = projectStartDate.split(".").reverse().join("-");
     const endDate = projectEndDate.split(".").reverse().join("-");
 
-    const res = await createProject({
+    await createProject({
       name: projectName,
       description: projectDescription,
       startDate: new Date(startDate).toISOString(),
