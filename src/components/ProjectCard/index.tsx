@@ -37,10 +37,10 @@ const ProjectCard: FC<Props> = ({ projectId }) => {
             {user?.id === project.owner.id && "(Вы)"}
           </span>
           <span className="badge">
-            Начало: {dateToString(project.startDate)}
+            Начало: {dateToString(project.startDate).day}
           </span>
           <span className="badge red">
-            Конец: {dateToString(project.endDate)}
+            Конец: {dateToString(project.endDate).day}
           </span>
         </div>
       </div>

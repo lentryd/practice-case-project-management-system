@@ -1,0 +1,35 @@
+@import '../../styles/variables.scss';
+
+.project-info {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 16px;
+  margin-bottom: 16px;
+
+  h1 {
+    margin: 0;
+    @include headline3;
+  }
+
+  p {
+    margin: 0;
+    @include body-large;
+  }
+}
+
+.project-actions {
+  gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.project-title {
+  padding: 0 16px;
+  @include headline4;
+}

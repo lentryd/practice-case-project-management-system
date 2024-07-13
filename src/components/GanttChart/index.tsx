@@ -1,22 +1,39 @@
 import { FC } from "react";
-import { useSelector } from "react-redux";
 import { Task, Gantt } from "gantt-task-react";
+import { useSelector, useDispatch } from "react-redux";
+import { formatGattData } from "../../utils/formatGattData";
 import { createProjectSelector } from "../../features/projectSlice";
+import { selectStagesByProjectId } from "../../features/stageSlice";
+import {
+  updateTask as updateTaskAction,
+  selectTasksByProjectId,
+} from "../../features/taskSlice";
+import { useUpdateTaskMutation } from "../../services/tasks.api";
+
+import "gantt-task-react/dist/index.css";
 import "./index.scss";
 
 type Props = {
-  tasks: Task[];
   projectId: string;
-
-  onDateChange: (task: Task) => void;
+  showDependencies?: boolean;
 };
 
-const GanttChart: FC<Props> = ({ tasks, projectId, onDateChange }) => {
+const GanttChart: FC<Props> = ({ projectId, showDependencies }) => {
+  // This is a custom hook that dispatches actions
+  const dispatch = useDispatch();
+  const [updateTask] = useUpdateTaskMutation();
+
+  // This is a custom selector that gets the project data from the store
+  const tasks = useSelector(selectTasksByProjectId(projectId));
+  const stages = useSelector(selectStagesByProjectId(projectId));
   const project = useSelector(createProjectSelector(projectId));
+
+  // If the project is not found, return null
   if (!project) {
     return null;
   }
 
+  // If the project is found, render the project data
   const ganttData: Task[] = [
     {
       id: project.id,
@@ -34,7 +51,37 @@ const GanttChart: FC<Props> = ({ tasks, projectId, onDateChange }) => {
       },
     },
   ];
-  ganttData.push(...tasks);
+  ganttData.push(...formatGattData(stages, tasks, showDependencies));
+
+  const onDateChange = (task: Task) => {
+    // Find the original task
+    const originalTask = tasks.find((t) => t.id === task.id);
+    if (!originalTask) return;
+
+    // Update the task in the frontend
+    dispatch(
+      updateTaskAction({
+        ...originalTask,
+        startDate: task.start.toISOString(),
+        endDate: task.end.toISOString(),
+      })
+    );
+
+    // Update the task at the backend
+    updateTask({
+      id: task.id,
+      projectId,
+      data: {
+        startDate: task.start,
+        endDate: task.end,
+      },
+    })
+      .unwrap()
+      // If the request fails, revert the changes
+      .catch(() => {
+        dispatch(updateTaskAction(originalTask));
+      });
+  };
 
   return (
     <div className="gantt-chart">

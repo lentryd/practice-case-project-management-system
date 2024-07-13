@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 import projectsApi from "../services/projects.api";
 import { Project } from "../types";
 

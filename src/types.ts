@@ -16,7 +16,7 @@ export interface AuthResponse {
 }
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
 }
@@ -45,11 +45,11 @@ export interface Project {
   startDate: string;
   endDate: string;
 
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 
   owner: User;
-  owner_id: string;
+  ownerId: string;
 }
 
 // Define the stage types
@@ -57,8 +57,8 @@ export interface Project {
 export interface StageData {
   name: string;
   description?: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface Stage {
@@ -69,10 +69,10 @@ export interface Stage {
   startDate: string;
   endDate: string;
 
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 
-  project_id: string;
+  projectId: string;
 }
 
 // Define the task types
@@ -80,6 +80,11 @@ export interface Stage {
 export interface TaskData {
   name: string;
   description?: string;
+
+  startDate: Date;
+  endDate: Date;
+
+  indexAtStage: number;
   stageId: string;
 }
 
@@ -88,9 +93,13 @@ export interface Task {
   name: string;
   description?: string;
 
-  created_at: string;
-  updated_at: string;
+  startDate: string;
+  endDate: string;
 
+  createdAt: string;
+  updatedAt: string;
+
+  indexAtStage: number;
   stageId: string;
   projectId: string;
 }

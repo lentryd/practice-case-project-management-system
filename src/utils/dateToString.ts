@@ -9,5 +9,5 @@ export function dateToString(date: Date | string) {
     d.getMonth() + 1
   )}.${d.getFullYear()}`;
 
-  return `${day} ${time}`;
+  return { day, time };
 }

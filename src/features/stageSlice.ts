@@ -1,15 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 import { Stage } from "../types";
 import stagesApi from "../services/stages.api";
 
 interface InitialState {
-  stages: Stage[];
+  stagesByProjectId: { [projectId: string]: Stage[] };
   stageLoading: boolean;
   stagesLastFetchTime: number;
 }
 
 const initialState: InitialState = {
-  stages: [],
+  stagesByProjectId: {},
   stageLoading: false,
   stagesLastFetchTime: 0,
 };
@@ -19,24 +20,34 @@ const slice = createSlice({
   initialState,
   reducers: {
     addStage: (state, action: PayloadAction<Stage>) => {
-      state.stages.push(action.payload);
+      const { projectId } = action.payload;
+      if (!state.stagesByProjectId[projectId]) {
+        state.stagesByProjectId[projectId] = [];
+      }
+      state.stagesByProjectId[projectId].push(action.payload);
     },
-    deleteStage: (state, action: PayloadAction<string>) => {
-      state.stages = state.stages.filter(
-        (stage) => stage.id !== action.payload
-      );
+    deleteStage: (state, action: PayloadAction<Stage>) => {
+      const { id, projectId } = action.payload;
+      state.stagesByProjectId[projectId] = state.stagesByProjectId[
+        projectId
+      ].filter((stage) => stage.id !== id);
     },
     updateStage: (state, action: PayloadAction<Stage>) => {
-      const index = state.stages.findIndex(
-        (stage) => stage.id === action.payload.id
+      const { id, projectId } = action.payload;
+      const index = state.stagesByProjectId[projectId]?.findIndex(
+        (stage) => stage.id === id
       );
       if (index !== -1) {
-        state.stages[index] = action.payload;
+        state.stagesByProjectId[projectId][index] = action.payload;
       }
     },
     clearStage: () => initialState,
-    setStages: (state, action: PayloadAction<Stage[]>) => {
-      state.stages = action.payload;
+    setStages: (
+      state,
+      action: PayloadAction<{ projectId: string; stages: Stage[] }>
+    ) => {
+      const { projectId, stages } = action.payload;
+      state.stagesByProjectId[projectId] = stages;
     },
     setStageLoading: (state, action: PayloadAction<boolean>) => {
       state.stageLoading = action.payload;
@@ -52,8 +63,10 @@ const slice = createSlice({
       })
       .addMatcher(
         stagesApi.endpoints.getStages.matchFulfilled,
-        (state, action: PayloadAction<Stage[]>) => {
-          state.stages = action.payload;
+        (state, action) => {
+          const projectId = action.meta.arg.originalArgs;
+          const stages = action.payload;
+          state.stagesByProjectId[projectId] = stages;
           state.stageLoading = false;
           state.stagesLastFetchTime = Date.now();
         }
@@ -74,8 +87,16 @@ export const {
   setStagesLastFetchTime,
 } = slice.actions;
 
-export const selectStages = (state: { stage: InitialState }) =>
-  state.stage.stages;
+// Селекторы
+export const selectStagesByProjectId =
+  (projectId: string) => (state: { stage: InitialState }) =>
+    state.stage.stagesByProjectId[projectId] || [];
+
+export const selectStageById = (id: string, projectId: string) =>
+  createSelector([selectStagesByProjectId(projectId)], (stages) =>
+    stages.find((stage) => stage.id === id)
+  );
+
 export const selectStageLoading = (state: { stage: InitialState }) =>
   state.stage.stageLoading;
 

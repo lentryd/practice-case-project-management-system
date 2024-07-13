@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
-import { useNavigate } from 'react-router';
-import './Button.scss';
+import React, { FC } from "react";
+import { useNavigate } from "react-router";
+import "./Button.scss";
 
 interface ButtonProps {
   to?: string;
   replace?: boolean;
-  label: string;
+  label?: string;
   loading?: boolean;
   disabled?: boolean;
   text?: boolean;
@@ -25,7 +25,7 @@ const Button: FC<ButtonProps> = ({
   filled = false,
   outlined = false,
   onClick,
-  children
+  children,
 }) => {
   const navigate = useNavigate();
 
@@ -39,27 +39,26 @@ const Button: FC<ButtonProps> = ({
   };
 
   const classes = [
-    'btn',
-    children ? 'icon' : '',
-    loading ? 'loading' : '',
-    disabled ? 'disabled' : '',
-    text ? 'text' : '',
-    filled ? 'filled' : '',
-    outlined ? 'outlined' : ''
-  ].join(' ');
+    "btn",
+    children ? "icon" : "",
+    loading ? "loading" : "",
+    disabled ? "disabled" : "",
+    text ? "text" : "",
+    filled ? "filled" : "",
+    outlined ? "outlined" : "",
+    !label ? "no-label" : "",
+  ].join(" ");
 
   return (
     <div
       onClick={handleClick}
-      onKeyPress={(e) => e.key === 'Enter' && handleClick(e as any)}
+      onKeyPress={(e) => e.key === "Enter" && handleClick(e as any)}
       className={classes}
       tabIndex={0}
     >
       {children}
-      <span className="label-large">{label}</span>
-      <div className="state-layer">
-        {loading && <div className="loader" />}
-      </div>
+      {label && <span className="label-large">{label}</span>}
+      <div className="state-layer">{loading && <div className="loader" />}</div>
     </div>
   );
 };
