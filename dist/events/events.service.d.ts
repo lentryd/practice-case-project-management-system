@@ -15,6 +15,7 @@ export declare class EventsService {
     private stagesMessageEvent;
     private projectsMessageEvent;
     sendEvent(event: EventType, data: any): void;
+    sendEventMany(event: EventType, data: any[]): void;
     getTaskObservable(): import("rxjs").Observable<MessageEvent>;
     getStageObservable(): import("rxjs").Observable<MessageEvent>;
     getProjectObservable(): import("rxjs").Observable<MessageEvent>;

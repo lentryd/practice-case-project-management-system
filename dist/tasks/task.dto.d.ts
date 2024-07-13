@@ -1,6 +1,9 @@
 export default class BaseTaskDto {
     name: string;
     description?: string;
+    startDate: Date;
+    endDate: Date;
+    indexAtStage: number;
     stageId: string;
     projectId: string;
 }

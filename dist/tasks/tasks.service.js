@@ -37,6 +37,9 @@ let TasksService = class TasksService {
         });
     }
     async create(data) {
+        if (data.startDate >= data.endDate) {
+            throw new common_1.BadRequestException('End date must be after start date');
+        }
         const stage = await this.prisma.stage.findUnique({
             where: { id: data.stageId },
         });
@@ -49,6 +52,26 @@ let TasksService = class TasksService {
         if (!project) {
             throw new common_1.BadRequestException('Project not found');
         }
+        const taskIndex = await this.prisma.task.count({
+            where: { stageId: data.stageId },
+        });
+        if (data.indexAtStage > taskIndex + 1) {
+            throw new common_1.BadRequestException('Invalid task index at stage');
+        }
+        await this.prisma.task.updateMany({
+            where: {
+                stageId: data.stageId,
+                indexAtStage: { gte: data.indexAtStage },
+            },
+            data: { indexAtStage: { increment: 1 } },
+        });
+        const updatedTasks = await this.prisma.task.findMany({
+            where: {
+                stageId: data.stageId,
+                indexAtStage: { gte: data.indexAtStage },
+            },
+        });
+        this.eventsService.sendEventMany(events_service_1.EventType.TaskUpdated, updatedTasks);
         const task = await this.prisma.task.create({ data });
         this.eventsService.sendEvent(events_service_1.EventType.TaskCreated, task);
         return task;
@@ -58,6 +81,11 @@ let TasksService = class TasksService {
         if (!task) {
             throw new common_1.BadRequestException('Task not found');
         }
+        data.startDate ??= task.startDate;
+        data.endDate ??= task.endDate;
+        if (data.startDate >= data.endDate) {
+            throw new common_1.BadRequestException('End date must be after start date');
+        }
         if (data.stageId) {
             const stage = await this.prisma.stage.findUnique({
                 where: { id: data.stageId },
@@ -66,8 +94,73 @@ let TasksService = class TasksService {
                 throw new common_1.BadRequestException('Stage not found');
             }
         }
+        if (data.stageId || data.indexAtStage) {
+            const oldStageId = task.stageId;
+            const oldIndexAtStage = task.indexAtStage;
+            const newStageId = data.stageId ?? oldStageId;
+            const newIndexAtStage = data.indexAtStage ?? oldIndexAtStage;
+            const taskIndex = await this.prisma.task.count({
+                where: { stageId: newStageId },
+            });
+            if (newIndexAtStage > taskIndex + 1) {
+                throw new common_1.BadRequestException('Invalid task index at stage');
+            }
+            if (oldStageId !== newStageId) {
+                await this.prisma.task.updateMany({
+                    where: {
+                        stageId: oldStageId,
+                        indexAtStage: { gt: oldIndexAtStage },
+                    },
+                    data: { indexAtStage: { decrement: 1 } },
+                });
+                await this.prisma.task.updateMany({
+                    where: {
+                        stageId: newStageId,
+                        indexAtStage: { gte: newIndexAtStage },
+                    },
+                    data: { indexAtStage: { increment: 1 } },
+                });
+            }
+            else {
+                if (newIndexAtStage < oldIndexAtStage) {
+                    await this.prisma.task.updateMany({
+                        where: {
+                            stageId: oldStageId,
+                            indexAtStage: {
+                                gte: newIndexAtStage,
+                                lt: oldIndexAtStage,
+                            },
+                        },
+                        data: { indexAtStage: { increment: 1 } },
+                    });
+                }
+                else if (newIndexAtStage > oldIndexAtStage) {
+                    await this.prisma.task.updateMany({
+                        where: {
+                            stageId: oldStageId,
+                            indexAtStage: {
+                                gt: oldIndexAtStage,
+                                lte: newIndexAtStage,
+                            },
+                        },
+                        data: { indexAtStage: { decrement: 1 } },
+                    });
+                }
+            }
+        }
         const updatedTask = await this.prisma.task.update({ where: { id }, data });
-        this.eventsService.sendEvent(events_service_1.EventType.TaskUpdated, updatedTask);
+        if (task.stageId === updatedTask.stageId) {
+            this.eventsService.sendEvent(events_service_1.EventType.TaskUpdated, updatedTask);
+        }
+        else {
+            await this.prisma.task
+                .findMany({
+                where: {
+                    OR: [{ stageId: task.stageId }, { stageId: updatedTask.stageId }],
+                },
+            })
+                .then((tasks) => this.eventsService.sendEventMany(events_service_1.EventType.TaskUpdated, tasks));
+        }
         return updatedTask;
     }
     async delete(id) {

@@ -36,6 +36,33 @@ __decorate([
     __metadata("design:type", String)
 ], BaseTaskDto.prototype, "description", void 0);
 __decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The start date of the task',
+        example: '2021-01-01T00:00:00.000',
+    }),
+    __metadata("design:type", Date)
+], BaseTaskDto.prototype, "startDate", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The end date of the task',
+        example: '2021-01-01T00:00:00.000',
+    }),
+    __metadata("design:type", Date)
+], BaseTaskDto.prototype, "endDate", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_2.ApiProperty)({
+        description: 'The index of the task at the stage',
+        example: 1,
+    }),
+    __metadata("design:type", Number)
+], BaseTaskDto.prototype, "indexAtStage", void 0);
+__decorate([
     (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     (0, swagger_2.ApiProperty)({

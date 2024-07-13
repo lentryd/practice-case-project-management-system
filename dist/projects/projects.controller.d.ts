@@ -72,8 +72,11 @@ export declare class ProjectsController {
         id: string;
         name: string;
         description: string | null;
+        startDate: Date;
+        endDate: Date;
         createdAt: Date;
         updatedAt: Date;
+        indexAtStage: number;
         stageId: string;
         projectId: string;
     }[]>;
@@ -81,8 +84,11 @@ export declare class ProjectsController {
         id: string;
         name: string;
         description: string | null;
+        startDate: Date;
+        endDate: Date;
         createdAt: Date;
         updatedAt: Date;
+        indexAtStage: number;
         stageId: string;
         projectId: string;
     }>;
@@ -90,8 +96,11 @@ export declare class ProjectsController {
         id: string;
         name: string;
         description: string | null;
+        startDate: Date;
+        endDate: Date;
         createdAt: Date;
         updatedAt: Date;
+        indexAtStage: number;
         stageId: string;
         projectId: string;
     }>;
