@@ -1,10 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 
-export const baseApiUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://pms.lentryd.su"
-    : "http://localhost:5000";
+export const baseApiUrl = "";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${baseApiUrl}/api`,

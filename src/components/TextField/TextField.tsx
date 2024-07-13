@@ -1,5 +1,5 @@
-import { useState, useEffect, FC, ChangeEvent, FocusEvent } from 'react';
-import './TextField.scss';
+import { useState, useEffect, FC, ChangeEvent } from "react";
+import "./TextField.scss";
 
 interface TextFieldProps {
   type?: string;
@@ -13,13 +13,13 @@ interface TextFieldProps {
 }
 
 const TextField: FC<TextFieldProps> = ({
-  type = 'text',
-  name = '',
-  label = '',
+  type = "text",
+  name = "",
+  label = "",
   error = false,
-  errorMsg = '',
-  modelValue = '',
-  autocomplete = 'off',
+  errorMsg = "",
+  modelValue = "",
+  autocomplete = "off",
   onUpdateModelValue,
 }) => {
   const [focussed, setFocussed] = useState(false);
@@ -35,15 +35,19 @@ const TextField: FC<TextFieldProps> = ({
   };
 
   const handleIconClick = () => {
-    setValue('');
-    onUpdateModelValue('');
+    setValue("");
+    onUpdateModelValue("");
   };
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocussed(true);
-  const handleBlur = (e: FocusEvent<HTMLInputElement>) => setFocussed(false);
+  const handleFocus = () => setFocussed(true);
+  const handleBlur = () => setFocussed(false);
 
   return (
-    <label className={`field ${!value ? 'empty' : ''} ${error ? 'error' : ''} ${focussed ? 'focussed' : ''}`}>
+    <label
+      className={`field ${!value ? "empty" : ""} ${error ? "error" : ""} ${
+        focussed ? "focussed" : ""
+      }`}
+    >
       {label && <span className="label">{label}</span>}
       <input
         type={type}
@@ -54,10 +58,7 @@ const TextField: FC<TextFieldProps> = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
       />
-      <span
-        className="icon material-symbols-rounded"
-        onClick={handleIconClick}
-      >
+      <span className="icon material-symbols-rounded" onClick={handleIconClick}>
         {error ? "error" : "cancel"}
       </span>
       {errorMsg && <span className="error-message">{errorMsg}</span>}
