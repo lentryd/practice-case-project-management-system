@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import initializeEvents from "../../services/events.sse";
+import { logout, selectIsAuthenticated } from "../../features/userSlice";
 import Slide from "@mui/material/Slide";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,7 +13,6 @@ import IconButton from "@mui/material/IconButton";
 import LogoutRounded from "@mui/icons-material/LogoutRounded";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
-import { logout, selectIsAuthenticated } from "../../features/userSlice";
 import ProjectDialog from "../../components/ProjectDialog";
 
 type Props = {
@@ -41,6 +42,8 @@ export default function Root() {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login", { replace: true });
+    } else {
+      initializeEvents();
     }
   }, [isAuthenticated]);
 
