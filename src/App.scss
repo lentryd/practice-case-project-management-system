@@ -1,0 +1,11 @@
+html,
+body,
+#root {
+  margin: 0;
+  width: 100vw;
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+  flex-direction: column;
+  text-size-adjust: 100%;
+}

@@ -1,85 +1,131 @@
-import { useState } from "react";
-import Button from "../../components/Button/Button";
-import TextField from "../../components/TextField/TextField";
-import validEmail from "../../utils/validEmail";
-import { useLazyMeQuery, useLoginMutation } from "../../services/user.api";
+import { FormEvent, useState } from "react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
+import Avatar from "@mui/material/Avatar";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import LoadingButton from "@mui/lab/LoadingButton";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useLoginMutation } from "../../services/user.api";
+import { EMAIL_REGEX } from "../../utils/constants";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const emailValid = () => email.length > 0 && validEmail(email);
-
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const passwordValid = () => password.length >= 8;
-
+export default function SignIn() {
   const [login, { isLoading }] = useLoginMutation();
-  const [triggerMeQuery] = useLazyMeQuery();
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  const handleSubmit = async () => {
-    setEmailError(!emailValid());
-    setPasswordError(!passwordValid());
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    setError("");
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const email = data.get("email") as string;
+    const password = data.get("password") as string;
 
-    if (!emailValid() || !passwordValid()) {
+    if (!email) setEmailError("Email не может быть пустым");
+    if (!password) setPasswordError("Пароль не может быть пустым");
+    if (!email || !password) return;
+
+    const isValidEmail = EMAIL_REGEX.test(email);
+    if (!isValidEmail) {
+      setEmailError("Введите корректный email");
       return;
     }
 
-    try {
-      await login({ email, password }).unwrap();
-      await triggerMeQuery().unwrap();
-    } catch (error) {
-      setEmailError(true);
-      setPasswordError(true);
-      console.error(error);
-    }
+    await login({ email, password })
+      .unwrap()
+      .catch((error) => {
+        const { data } = error;
+        if (data.message.includes("Wrong email or password")) {
+          setError("Неверный email или пароль");
+          return;
+        }
+
+        console.error(error);
+        setError(error.data.message);
+      });
   };
 
   return (
     <>
-      <div className="info">
-        <h1 className="display-medium">Вход</h1>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
 
-        <span className="body-medium">
-          Для использования системы необходимо авторизоваться
-        </span>
-      </div>
+        <Typography component="h1" variant="h5">
+          Войти
+        </Typography>
 
-      <form className="content" onSubmit={handleSubmit}>
-        <TextField
-          label="Email"
-          type="email"
-          autocomplete="email"
-          error={emailError}
-          errorMsg="Проверьте правильность email"
-          modelValue={email}
-          onUpdateModelValue={(value) => {
-            setEmail(value);
-            setEmailError(false);
-          }}
-        />
-        <TextField
-          label="Пароль"
-          type="password"
-          autocomplete="current-password"
-          error={passwordError}
-          errorMsg="Проверьте правильность пароля"
-          modelValue={password}
-          onUpdateModelValue={(value) => {
-            setPassword(value);
-            setPasswordError(false);
-          }}
-        />
-      </form>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={() => setEmailError("")}
+                error={!!emailError}
+                helperText={emailError}
+              />
+            </Grid>
 
-      <div className="actions">
-        <Button to="/register" label="Создать аккаунт" />
-        <Button
-          label="Далее"
-          filled
-          loading={isLoading}
-          onClick={handleSubmit}
-        />
-      </div>
+            <Grid item xs={12}>
+              <TextField
+                label="Пароль"
+                id="password"
+                name="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                margin="normal"
+                fullWidth
+                onChange={() => setPasswordError("")}
+                error={!!passwordError}
+                helperText={passwordError}
+              />
+            </Grid>
+          </Grid>
+
+          {error && (
+            <Alert severity="error" sx={{ mt: 1 }}>
+              {error}
+            </Alert>
+          )}
+
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            fullWidth
+            loading={isLoading}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Войти
+          </LoadingButton>
+
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="/register" variant="body2">
+                {"Нет аккаунта? Зарегистрироваться"}
+              </Link>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
     </>
   );
 }

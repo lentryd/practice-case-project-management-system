@@ -71,9 +71,41 @@ const slice = createSlice({
           state.tasksLastFetchTime = Date.now();
         }
       )
-      .addMatcher(tasksApi.endpoints.createTask.matchRejected, (state) => {
+      .addMatcher(tasksApi.endpoints.getTasks.matchRejected, (state) => {
         state.taskLoading = false;
-      });
+      })
+      .addMatcher(
+        tasksApi.endpoints.createTask.matchFulfilled,
+        (state, action) => {
+          const task = action.payload;
+          const projectId = action.meta.arg.originalArgs.projectId;
+          state.tasksByProjectId[projectId].push(task);
+        }
+      )
+      .addMatcher(
+        tasksApi.endpoints.updateTask.matchFulfilled,
+        (state, action) => {
+          const task = action.payload;
+          const projectId = action.meta.arg.originalArgs.projectId;
+          const index = state.tasksByProjectId[projectId].findIndex(
+            (t) => t.id === task.id
+          );
+          if (index !== -1) {
+            state.tasksByProjectId[projectId][index] = task;
+          } else {
+            state.tasksByProjectId[projectId].push(task);
+          }
+        }
+      )
+      .addMatcher(
+        tasksApi.endpoints.deleteTask.matchFulfilled,
+        (state, action) => {
+          const { id, projectId } = action.meta.arg.originalArgs;
+          state.tasksByProjectId[projectId] = state.tasksByProjectId[
+            projectId
+          ].filter((task) => task.id !== id);
+        }
+      );
   },
 });
 

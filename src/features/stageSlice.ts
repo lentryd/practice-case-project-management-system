@@ -71,9 +71,37 @@ const slice = createSlice({
           state.stagesLastFetchTime = Date.now();
         }
       )
-      .addMatcher(stagesApi.endpoints.createStage.matchRejected, (state) => {
+      .addMatcher(stagesApi.endpoints.getStages.matchRejected, (state) => {
         state.stageLoading = false;
-      });
+      })
+      .addMatcher(
+        stagesApi.endpoints.createStage.matchFulfilled,
+        (state, action) => {
+          const { projectId } = action.meta.arg.originalArgs;
+          state.stagesByProjectId[projectId].push(action.payload);
+        }
+      )
+      .addMatcher(
+        stagesApi.endpoints.updateStage.matchFulfilled,
+        (state, action) => {
+          const { projectId } = action.meta.arg.originalArgs;
+          const index = state.stagesByProjectId[projectId].findIndex(
+            (stage) => stage.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.stagesByProjectId[projectId][index] = action.payload;
+          }
+        }
+      )
+      .addMatcher(
+        stagesApi.endpoints.deleteStage.matchFulfilled,
+        (state, action) => {
+          const { projectId, id } = action.meta.arg.originalArgs;
+          state.stagesByProjectId[projectId] = state.stagesByProjectId[
+            projectId
+          ].filter((stage) => stage.id !== id);
+        }
+      );
   },
 });
 

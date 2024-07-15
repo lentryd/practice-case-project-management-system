@@ -3,11 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useUpdateTaskMutation } from "../../services/tasks.api";
 import { createProjectSelector } from "../../features/projectSlice";
+import { selectTasksByProjectId } from "../../features/taskSlice";
 import { selectStagesByProjectId } from "../../features/stageSlice";
-import {
-  updateTask as updateTaskAction,
-  selectTasksByProjectId,
-} from "../../features/taskSlice";
+import { updateTask as updateTaskAction } from "../../features/taskSlice";
+import Grid from "@mui/material/Grid";
 import Column from "./Column";
 import "./index.scss";
 
@@ -150,12 +149,16 @@ const TaskBoard: FC<Props> = ({ projectId }) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="task-board">
+      <Grid container spacing={2} wrap="nowrap" sx={{ overflowX: "auto" }}>
         {stages.map((stage) => {
           const tasksInStage = tasks.filter((t) => t.stageId === stage.id);
-          return <Column key={stage.id} stage={stage} tasks={tasksInStage} />;
+          return (
+            <Grid item key={stage.id} xs={8} sm={4} minWidth={300}>
+              <Column key={stage.id} stage={stage} tasks={tasksInStage} />
+            </Grid>
+          );
         })}
-      </div>
+      </Grid>
     </DragDropContext>
   );
 };

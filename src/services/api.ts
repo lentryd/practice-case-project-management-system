@@ -3,7 +3,7 @@ import { RootState } from "../store";
 
 export const baseApiUrl = "";
 
-const baseQuery = fetchBaseQuery({
+export const baseQuery = fetchBaseQuery({
   baseUrl: `${baseApiUrl}/api`,
   prepareHeaders: (headers, { getState }) => {
     const token =

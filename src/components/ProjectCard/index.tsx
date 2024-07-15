@@ -1,10 +1,14 @@
 import { FC } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import CardActionArea from "@mui/material/CardActionArea";
 import { createProjectSelector } from "../../features/projectSlice";
 import { selectUser } from "../../features/userSlice";
 import { dateToString } from "../../utils/dateToString";
-import "./index.scss";
 
 type Props = {
   projectId: string;
@@ -12,39 +16,37 @@ type Props = {
 
 const ProjectCard: FC<Props> = ({ projectId }) => {
   const { user } = useSelector(selectUser);
-  const selector = createProjectSelector(projectId);
-  const project = useSelector(selector);
+  const project = useSelector(createProjectSelector(projectId));
   const navigate = useNavigate();
 
   if (!project) {
     return null;
   }
 
-  return (
-    <>
-      <div
-        className="projectCard"
-        onClick={() => navigate(`/projects/${project.id}`)}
-      >
-        <div className="info">
-          <h2>{project.name}</h2>
-          {project.description && <p>{project.description}</p>}
-        </div>
+  const handleOpenProject = () => {
+    navigate(`/projects/${project.id}`);
+  };
 
-        <div className="details">
-          <span className="badge">
+  return (
+    <Card>
+      <CardActionArea onClick={handleOpenProject}>
+        <CardHeader
+          title={project.name}
+          subheader={
+            dateToString(project.startDate).day +
+            " - " +
+            dateToString(project.endDate).day
+          }
+        />
+        <CardContent>
+          <Typography paragraph>{project.description}</Typography>
+          <Typography paragraph>
             Автор: {project.owner.name}{" "}
-            {user?.id === project.owner.id && "(Вы)"}
-          </span>
-          <span className="badge">
-            Начало: {dateToString(project.startDate).day}
-          </span>
-          <span className="badge red">
-            Конец: {dateToString(project.endDate).day}
-          </span>
-        </div>
-      </div>
-    </>
+            {project.owner.id === user?.id && "(Вы)"}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
 

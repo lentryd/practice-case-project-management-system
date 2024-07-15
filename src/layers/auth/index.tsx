@@ -1,8 +1,8 @@
+import { useEffect } from "react";
+import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { selectIsAuthenticated } from "../../features/userSlice";
-import "./index.scss";
-import { useEffect } from "react";
 
 export default function Root() {
   const navigate = useNavigate();
@@ -16,9 +16,9 @@ export default function Root() {
 
   return (
     <>
-      <div className="auth-container">
+      <Container component="main" maxWidth="xs">
         <Outlet />
-      </div>
+      </Container>
     </>
   );
 }
