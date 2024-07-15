@@ -40,6 +40,12 @@ export declare class ProjectsService {
     create(data: CreateProjectDto & {
         ownerId: string;
     }): Promise<{
+        owner: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         id: string;
         name: string;
         description: string | null;
@@ -50,6 +56,12 @@ export declare class ProjectsService {
         ownerId: string;
     }>;
     update(id: string, data: UpdateProjectDto): Promise<{
+        owner: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         id: string;
         name: string;
         description: string | null;

@@ -43,6 +43,11 @@ let ProjectsService = class ProjectsService {
         }
         const project = this.prisma.project.create({
             data,
+            include: {
+                owner: {
+                    select: { id: true, name: true, email: true },
+                },
+            },
         });
         this.eventsService.sendEvent(events_service_1.EventType.ProjectCreated, project);
         return project;
@@ -54,6 +59,11 @@ let ProjectsService = class ProjectsService {
         }
         const updatedProject = await this.prisma.project.update({
             where: { id },
+            include: {
+                owner: {
+                    select: { id: true, name: true, email: true },
+                },
+            },
             data,
         });
         this.eventsService.sendEvent(events_service_1.EventType.ProjectUpdated, updatedProject);

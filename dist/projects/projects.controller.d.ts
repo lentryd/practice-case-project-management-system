@@ -48,6 +48,12 @@ export declare class ProjectsController {
         ownerId: string;
     }>;
     create(data: CreateProjectDto, req: any): Promise<{
+        owner: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         id: string;
         name: string;
         description: string | null;
@@ -58,6 +64,12 @@ export declare class ProjectsController {
         ownerId: string;
     }>;
     update(id: string, data: UpdateProjectDto): Promise<{
+        owner: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         id: string;
         name: string;
         description: string | null;
