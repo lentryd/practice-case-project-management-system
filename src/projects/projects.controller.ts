@@ -19,12 +19,12 @@ import BaseProjectDto, {
   AddMemberDto,
 } from './projects.dto';
 
-import { StagesService } from '../stages/stages.service';
-import BaseStageDto, { UpdateStageDto } from '../stages/stage.dto';
+import { StagesService } from '../integrate/stages/stages.service';
+import BaseStageDto, { UpdateStageDto } from '../integrate/stages/stage.dto';
 class CreateStageDto extends OmitType(BaseStageDto, ['projectId']) {}
 
-import { TasksService } from '../tasks/tasks.service';
-import BaseTaskDto, { UpdateTaskDto } from '../tasks/task.dto';
+import { TasksService } from '../integrate/tasks/tasks.service';
+import BaseTaskDto, { UpdateTaskDto } from '../integrate/tasks/task.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import BaseUserDto from 'src/users/users.dto';
 class CreateTaskDto extends OmitType(BaseTaskDto, ['projectId']) {}

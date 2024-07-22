@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { EventsService, EventType } from '../events/events.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { EventsService, EventType } from '../../events/events.service';
 import { CreateStageDto, UpdateStageDto } from './stage.dto';
 
 @Injectable()
